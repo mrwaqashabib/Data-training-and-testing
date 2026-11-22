@@ -1,0 +1,22 @@
+# Let's programmatically print out the required libraries and their current versions
+import pandas as pd
+import numpy as np
+import matplotlib
+import seaborn as sns
+import sklearn
+
+requirements = f"""\
+pandas=={pd.__version__}
+numpy=={np.__version__}
+matplotlib=={matplotlib.__version__}
+seaborn=={sns.__version__}
+scikit-learn=={sklearn.__version__}
+"""
+
+print("--- RECOMMENDED requirements.txt CONTENT ---")
+print(requirements)
+
+# Save it directly as a requirements.txt file in Colab
+with open('requirements.txt', 'w') as f:
+    f.write(requirements)
+print("\nSuccessfully created 'requirements.txt' in your files section!")
