@@ -1,0 +1,49 @@
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
+
+print("--- 1. Hyperparameter Tuning (GridSearchCV) ---")
+print("Tuning the Random Forest model to find the perfect settings...\n")
+
+# 1. Define the different "settings" (hyperparameters) you want to test
+param_grid = {
+    'n_estimators': [50, 100, 150], # Number of trees in the forest
+    'max_depth': [None, 10, 20],    # Maximum depth of the trees
+    'min_samples_split': [2, 5]     # Minimum data points needed to split a branch
+}
+
+# 2. Set up the GridSearch (it will automatically try every combination of the settings above)
+grid_search = GridSearchCV(
+    estimator=RandomForestClassifier(random_state=42),
+    param_grid=param_grid,
+    cv=3,         # Cross-validation (tests each combination 3 times)
+    n_jobs=-1,    # Uses all processor cores to run faster
+    verbose=1     # Shows progress while running
+)
+
+# 3. Train it on the data to find the best combination
+grid_search.fit(X_train, y_train)
+
+# 4. Extract the best model and test it
+best_rf_model = grid_search.best_estimator_
+tuned_y_pred = best_rf_model.predict(X_test)
+tuned_accuracy = accuracy_score(y_test, tuned_y_pred)
+
+print("\nBest Settings Found:", grid_search.best_params_)
+print(f"Tuned Model Accuracy: {round(tuned_accuracy, 4)}")
+
+
+print("\n\n--- 2. Final Conclusion & Report Template ---")
+print("""
+[Copy and paste this into your final report/notebook, filling in your specific numbers:]
+
+CONCLUSION:
+After evaluating Logistic Regression, Decision Tree, and Random Forest, the best-performing model for this dataset was the [Insert Winning Model, e.g., Random Forest]. 
+
+WHY IT WAS SELECTED:
+It achieved the highest accuracy of [Insert Accuracy %] and the highest F1-Score of [Insert F1-Score]. While Logistic Regression was faster and the Decision Tree was easier to visualize, the Random Forest handled the complex patterns in the data much better without overfitting. After applying GridSearchCV for hyperparameter tuning, the model's accuracy further improved/stabilized to [Insert Tuned Accuracy %] using the optimal settings: [Insert Best Settings].
+
+WHAT I LEARNED:
+1. Data Preprocessing (handling missing values and scaling) is critical; without it, the models would fail to learn properly.
+2. A single model is rarely enough. Comparing multiple algorithms is necessary to find the right balance between speed, explainability, and accuracy.
+3. Hyperparameter tuning proves that the "default" settings of a machine learning algorithm can almost always be optimized for better performance.
+""")
